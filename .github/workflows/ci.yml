@@ -19,7 +19,7 @@ jobs:
       postgres:
         image: postgres:12
         env:
-          POSTGRES_USER: teuingatuh
+          POSTGRES_USER: root
           POSTGRES_PASSWORD: teuingatuh
           POSTGRES_DB: simple_bank
         ports:
