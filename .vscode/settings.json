@@ -4,6 +4,7 @@
         "habibiazmi",
         "mapstructure",
         "Paseto",
+        "protoc",
         "simplebank"
     ]
 }
