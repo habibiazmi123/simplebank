@@ -21,9 +21,9 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		return nil, status.Errorf(codes.Internal, "failed to find user")
 	}
 
-	err = util.CheckPassword(req.GetPassword(), user.HashedPassword)
+	err = util.CheckPassword(req.Password, user.HashedPassword)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "incorrect password: %s", err)
+		return nil, status.Errorf(codes.NotFound, "incorrect password")
 	}
 
 	accessToken, accessPayload, err := server.tokenMaker.CreateToken(
@@ -31,7 +31,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		server.config.AccessTokenDuration,
 	)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed create access token")
+		return nil, status.Errorf(codes.Internal, "failed to create access token")
 	}
 
 	refreshToken, refreshPayload, err := server.tokenMaker.CreateToken(
@@ -39,7 +39,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		server.config.RefreshTokenDuration,
 	)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed create refresh token")
+		return nil, status.Errorf(codes.Internal, "failed to create refresh token")
 	}
 
 	mtdt := server.extractMetadata(ctx)
@@ -53,7 +53,7 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		ExpiresAt:    refreshPayload.ExpiredAt,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed create session: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to create session")
 	}
 
 	rsp := &pb.LoginUserResponse{
@@ -64,6 +64,5 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		AccessTokenExpiresAt:  timestamppb.New(accessPayload.ExpiredAt),
 		RefreshTokenExpiresAt: timestamppb.New(refreshPayload.ExpiredAt),
 	}
-
 	return rsp, nil
 }

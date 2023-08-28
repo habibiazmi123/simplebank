@@ -3,7 +3,6 @@ package gapi
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
 	db "github.com/habibiazmi123/simplebank/db/sqlc"
 	"github.com/habibiazmi123/simplebank/pb"
 	"github.com/habibiazmi123/simplebank/token"
@@ -16,7 +15,6 @@ type Server struct {
 	config     util.Config
 	store      db.Store
 	tokenMaker token.Maker
-	router     *gin.Engine
 }
 
 // NewServer creates a new gRPC server.
