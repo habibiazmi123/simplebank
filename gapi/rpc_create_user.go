@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"fmt"
 
 	db "github.com/habibiazmi123/simplebank/db/sqlc"
 	"github.com/habibiazmi123/simplebank/pb"
@@ -15,12 +14,10 @@ import (
 )
 
 func (server *Server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
-	// violations := validateCreateUserRequest(req)
-	// if violations != nil {
-	// 	return nil, invalidArgumentError(violations)
-	// }
-
-	fmt.Println("OKE")
+	violations := validateCreateUserRequest(req)
+	if violations != nil {
+		return nil, invalidArgumentError(violations)
+	}
 
 	hashedPassword, err := util.HashPassword(req.GetPassword())
 	if err != nil {

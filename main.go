@@ -10,26 +10,22 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/habibiazmi123/simplebank/api"
 	db "github.com/habibiazmi123/simplebank/db/sqlc"
-	_ "github.com/habibiazmi123/simplebank/doc/statik"
 	"github.com/habibiazmi123/simplebank/gapi"
 	"github.com/habibiazmi123/simplebank/pb"
 	"github.com/habibiazmi123/simplebank/util"
 	_ "github.com/lib/pq"
-	"github.com/rakyll/statik/fs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-var conn *sql.DB
-
 func main() {
 	config, err := util.LoadConfig(".")
 	if err != nil {
-		log.Fatal("cannot load config: ", err)
+		log.Fatal("cannot load config:", err)
 	}
 
-	conn, err = sql.Open(config.DBDriver, config.DBSource)
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
@@ -51,13 +47,13 @@ func runGrpcServer(config util.Config, store db.Store) {
 
 	listener, err := net.Listen("tcp", config.GRPCServerAddress)
 	if err != nil {
-		log.Fatal("cannot create listener")
+		log.Fatal("cannot create listener:", err)
 	}
 
-	log.Printf("start gRPC at %s", listener.Addr())
+	log.Printf("start gRPC server at %s", listener.Addr().String())
 	err = grpcServer.Serve(listener)
 	if err != nil {
-		log.Fatal("cannot start gRPC server")
+		log.Fatal("cannot start gRPC server:", err)
 	}
 }
 
@@ -82,7 +78,6 @@ func runGatewayServer(config util.Config, store db.Store) {
 	defer cancel()
 
 	err = pb.RegisterSimpleBankHandlerServer(ctx, grpcMux, server)
-
 	if err != nil {
 		log.Fatal("cannot register handler server:", err)
 	}
@@ -90,23 +85,15 @@ func runGatewayServer(config util.Config, store db.Store) {
 	mux := http.NewServeMux()
 	mux.Handle("/", grpcMux)
 
-	statikFS, err := fs.New()
-	if err != nil {
-		log.Fatal("cannot create statik fs", err)
-	}
-
-	swaggerHandler := http.StripPrefix("/swagger/", http.FileServer(statikFS))
-	mux.Handle("/swagger/", swaggerHandler)
-
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {
 		log.Fatal("cannot create listener:", err)
 	}
 
-	log.Printf("start HTTP gateway at %s", listener.Addr().String())
+	log.Printf("start HTTP gateway server at %s", listener.Addr().String())
 	err = http.Serve(listener, mux)
 	if err != nil {
-		log.Fatal("cannot start gRPC server:", err)
+		log.Fatal("cannot start HTTP gateway server:", err)
 	}
 }
 

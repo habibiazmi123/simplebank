@@ -54,13 +54,13 @@ func (server *Server) renewAccessToken(ctx *gin.Context) {
 	}
 
 	if session.RefreshToken != req.RefreshToken {
-		err := fmt.Errorf("incorrect session user")
+		err := fmt.Errorf("mismatched session token")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 
 	if time.Now().After(session.ExpiresAt) {
-		err := fmt.Errorf("expired session user")
+		err := fmt.Errorf("expired session")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
