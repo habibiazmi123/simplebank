@@ -22,7 +22,9 @@ require (
 )
 
 require (
+	bazil.org/fuse v0.0.0-20230120002735-62a210ff1fd5
 	github.com/golang-migrate/migrate/v4 v4.16.2
+	github.com/hibiken/asynq v0.24.1
 	github.com/rakyll/statik v0.1.7
 	github.com/rs/zerolog v1.30.0
 )
@@ -42,7 +44,6 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hibiken/asynq v0.24.1 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect

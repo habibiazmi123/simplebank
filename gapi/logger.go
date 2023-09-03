@@ -6,13 +6,17 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func GrpcLogger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+func GrpcLogger(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (resp interface{}, err error) {
 	startTime := time.Now()
 	result, err := handler(ctx, req)
 	duration := time.Since(startTime)
@@ -74,6 +78,6 @@ func HttpLogger(handler http.Handler) http.Handler {
 			Int("status_code", rec.StatusCode).
 			Str("status_text", http.StatusText(rec.StatusCode)).
 			Dur("duration", duration).
-			Msg("received a Http request")
+			Msg("received a HTTP request")
 	})
 }

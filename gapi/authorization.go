@@ -43,5 +43,4 @@ func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error)
 	}
 
 	return payload, nil
-
 }
