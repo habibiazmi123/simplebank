@@ -19,6 +19,9 @@ migratedown:
 migratedown1:
 	migrate -path db/migration -database "postgresql://root:ULJjXt6GBN00RS0twHXo@simple-bank.c7awo2zrds81.us-east-1.rds.amazonaws.com:5432/simple_bank" -verbose down 1
 
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
+
 sqlc:
 	sqlc generate
 
